@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# prisma
+# Ignora o banco de dados local
+prisma/dev.db
+
+# Ignora arquivos de log, cache, etc.
+prisma/*.log
+prisma/.env
+
+!prisma/migrations/
