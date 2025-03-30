@@ -58,7 +58,6 @@ const UploadDocument = () => {
 
       const result = await response.json();
       console.log("Documento carregado com sucesso:", result.document);
-
       router.refresh();
       setIsOpen(false);
       setFile(null);

@@ -4,13 +4,15 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { LuEye, LuSquarePen, LuTrash2 } from "react-icons/lu";
 import UploadDocument from "./UploadDocument";
+import DocumentPreview from './DocumentPreview';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 interface Document {
   id: number;
   name: string;
   creationDate: string;
-  status: string; 
+  status: string;
+  fileKey: string;
 }
 
 const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
@@ -18,6 +20,11 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [previewFileKey, setPreviewFileKey] = useState<string | null>(null);
+
+  const handleViewClick = (document: Document) => {
+    setPreviewFileKey(document.fileKey);
+  };
 
   const handleDeleteClick = (document: Document) => {
     setSelectedDoc(document);
@@ -70,16 +77,19 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
               <TableCell>{document.creationDate}</TableCell>
               <TableCell>
                 <span
-                  className={`inline-block px-3 py-1 text-white rounded-full ${
-                    document.status === 'Pendente' ? 'bg-[#8E2CDB]' : 'bg-[#30A949]'
-                  }`}
+                  className={`inline-block px-3 py-1 text-white rounded-full ${document.status === 'Pendente' ? 'bg-[#8E2CDB]' : 'bg-[#30A949]'
+                    }`}
                 >
                   {document.status}
                 </span>
               </TableCell>
               <TableCell>
                 <div className="flex space-x-2">
-                  <button className="text-[#383838] hover:text-[#7a7a7a] cursor-pointer" title="Ver documento">
+                  <button
+                    className="text-[#383838] hover:text-[#7a7a7a] cursor-pointer"
+                    title="Ver documento"
+                    onClick={() => handleViewClick(document)}
+                  >
                     <LuEye className="h-5 w-5" />
                   </button>
                   <button className="text-[#383838] hover:text-[#7a7a7a] cursor-pointer" title="Assinar documento">
@@ -119,6 +129,13 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+      )}
+
+      {previewFileKey && (
+        <DocumentPreview 
+          fileKey={previewFileKey} 
+          onClose={() => setPreviewFileKey(null)}
+        />
       )}
     </div>
   );

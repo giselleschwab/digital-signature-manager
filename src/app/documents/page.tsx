@@ -37,7 +37,8 @@ export default async function DocumentsList() {
       id: document.id,
       name: document.name,
       creationDate: formattedDate,  
-      status: document.status
+      status: document.status,
+      fileKey: document.fileKey, 
     };
   });
   
