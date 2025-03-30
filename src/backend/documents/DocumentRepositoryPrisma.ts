@@ -5,9 +5,15 @@ const prisma = new PrismaClient();
 export class DocumentRepositoryPrisma {
   // Listar documentos do usuário
   async listByUserId(userId: number) {
-    return await prisma.document.findMany({
+    const documents = await prisma.document.findMany({
       where: { userId },
     });
+  
+    // Mapeia o status para 'Pendente' ou 'Assinado'
+    return documents.map((document) => ({
+      ...document,
+      status: document.status === "PENDING" ? "Pendente" : "Assinado",  // Ajuste aqui
+    }));
   }
 
   // Criar um novo documento

@@ -1,43 +1,52 @@
-// documents/page.tsx
 import { getServerAuthSession } from "@/backend/authentication/auth";
-import Header from "./components/Header"; // Importe o Header
-import UploadDocument from "./components/UploadDocument";
+import Header from "./components/Header";
 import DocumentTable from "./components/DocumentTable";
 
-// Suponha que esta função seja responsável por pegar os documentos de alguma fonte (ex: banco de dados)
-const fetchDocuments = async () => {
-  // Aqui você faria a requisição para pegar os documentos reais.
-  // Para fins de exemplo, estou usando dados simulados.
-  return [
-    {
-      id: 1,
-      name: 'Documento A',
-      creationDate: '2025-03-28',
-      status: 'Pendente',
-    },
-    {
-      id: 2,
-      name: 'Documento B',
-      creationDate: '2025-03-27',
-      status: 'Assinado',
-    },
-    // Adicione mais documentos conforme necessário
-  ];
+const fetchDocuments = async (userId: number) => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/documents/list?userId=${userId}`);
+    if (!response.ok) {
+      throw new Error("Erro ao carregar documentos");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 };
 
 export default async function DocumentsList() {
   const session = await getServerAuthSession();
   const user = session?.user;
 
-  // Obtenha os documentos
-  const documents = await fetchDocuments();
+  if (!user) {
+    return <div>Você precisa estar logado para ver os documentos.</div>;
+  }
+
+  const documents = await fetchDocuments(Number(user.id));
+
+  const formattedDocuments = documents.map((document) => {
+    const creationDate = new Date(document.createdAt);  
+  
+    // Verifique se a data é válida
+    const formattedDate = isNaN(creationDate.getTime()) 
+      ? 'Data inválida'  
+      : creationDate.toLocaleDateString();  
+  
+    return {
+      id: document.id,
+      name: document.name,
+      creationDate: formattedDate,  
+      status: document.status
+    };
+  });
+  
 
   return (
     <div className="bg-[#D9D9D9] min-h-screen">
       {user && <Header userName={user.name ?? "Guest"} />}
-      <UploadDocument />
-      {/* Passe os documentos como props para o DocumentTable */}
-      <DocumentTable documents={documents} />
+      {/* Passe os documentos formatados como props para o DocumentTable */}
+      <DocumentTable documents={formattedDocuments} />
     </div>
   );
 }
