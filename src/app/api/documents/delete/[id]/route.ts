@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-
 import { DocumentRepositoryPrisma } from '@/backend/documents/DocumentRepositoryPrisma';
 
 const documentRepository = new DocumentRepositoryPrisma();
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
+  const { id } = context.params;
+
   try {
-    const deletedDocument = await documentRepository.delete(params.id);
+    const deletedDocument = await documentRepository.delete(id);
     return NextResponse.json({
       message: 'Documento excluído com sucesso',
       document: deletedDocument,
@@ -22,4 +23,3 @@ export async function DELETE(
     );
   }
 }
-
