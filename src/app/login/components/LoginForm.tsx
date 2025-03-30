@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import Image from 'next/image';
 
 // Usando o zod para validação do formulário
 const loginFormSchema = z.object({
@@ -19,7 +20,7 @@ const loginFormSchema = z.object({
 });
 
 const registerFormSchema = z.object({
-  name: z.string().min(1, "Nome é obrigatório"), // Campo de nome adicionado
+  name: z.string().min(1, "Nome é obrigatório"),
   email: z.string().email("E-mail inválido"),
   password: z.string().min(1, "Obrigatório"),
   confirmPassword: z.string().min(1, "Confirmar senha é obrigatório"),
@@ -110,76 +111,29 @@ export default function LoginFormComponent() {
   }
 
   return (
-    <div>
-      {/* Formulário de Login */}
-      <Form {...loginForm}>
-        <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
-          <FormField
-            control={loginForm.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>E-mail</FormLabel>
-                <FormControl>
-                  <Input placeholder="Digite seu e-mail" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={loginForm.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Senha</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="Digite sua senha" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {loading && <p className="mt-4">Aguarde...</p>}
-          {!loading && <Button type="submit">Entrar</Button>}
-        </form>
-      </Form>
+    <div className="flex flex-col md:flex-row h-screen">
+      <div className="w-full sm:w-2/3 md:w-3/5 bg-[#383838] text-white p-8 relative">
+        <div className="max-w-md ml-auto mt-30 mr-8">
+          <h2 className="text-3xl text-right">Simplifique sua assinatura de documentos.</h2>
+          <p className="mt-4 text-3xl font-bold text-right"> Rápido, seguro e digital.</p>
+        </div>
 
-      {/* Campo de Registrar com o Modal */}
-      <div className="mt-4 text-center">
-        <Button variant="link" onClick={() => setDialogOpen(true)}>Registrar</Button>
+        <Image
+          src="/image-login.svg"
+          alt="Imagem explicativa"
+          className="absolute bottom-0 left-0 hidden sm:block"
+          width={400}
+          height={500}
+        />
       </div>
 
-      {/* Modal de Registrar */}
-      <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-        <DialogTrigger />
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Cadastro</DialogTitle>
-            <DialogDescription>
-              Crie uma nova conta para acessar nossos serviços.
-            </DialogDescription>
-          </DialogHeader>
-
-          {/* Formulário de Cadastro */}
-          <Form {...registerForm}>
-            <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
-              {/* Campo de Nome */}
+      <div className="w-full sm:w-1/3 md:w-2/5 bg-[#D9D9D9] flex items-center justify-center p-8 flex-1">
+        <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
+          {/* Formulário de Login */}
+          <Form {...loginForm}>
+            <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
               <FormField
-                control={registerForm.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nome</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Digite seu nome" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={registerForm.control}
+                control={loginForm.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
@@ -192,7 +146,7 @@ export default function LoginFormComponent() {
                 )}
               />
               <FormField
-                control={registerForm.control}
+                control={loginForm.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
@@ -204,24 +158,94 @@ export default function LoginFormComponent() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={registerForm.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Repetir Senha</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="Repita sua senha" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit">Registrar</Button>
+              {loading && <p className="mt-4">Aguarde...</p>}
+              {!loading && (
+                <Button className="w-full bg-[#30A949] cursor-pointer hover:bg-[#5CCF7F] transition-all duration-300" type="submit">
+                  Entrar
+                </Button>
+              )}
             </form>
           </Form>
-        </DialogContent>
-      </Dialog>
+
+          <div className="mt-4 text-center">
+            <Button variant="link" className="cursor-pointer" onClick={() => setDialogOpen(true)}>
+              Novo por aqui? Cadastre-se!
+            </Button>
+          </div>
+
+          <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger />
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Cadastro</DialogTitle>
+                <DialogDescription>
+                  Crie uma nova conta para acessar nossos serviços.
+                </DialogDescription>
+              </DialogHeader>
+
+              <Form {...registerForm}>
+                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
+                  <FormField
+                    control={registerForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nome</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Digite seu nome" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={registerForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>E-mail</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Digite seu e-mail" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={registerForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Senha</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="Digite sua senha" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={registerForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Repetir Senha</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="Repita sua senha" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="w-full">Registrar</Button>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
     </div>
+
+
   );
 }
