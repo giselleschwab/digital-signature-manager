@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { DocumentRepositoryPrisma } from '@/backend/documents/DocumentRepositoryPrisma';
 
 const documentRepository = new DocumentRepositoryPrisma();
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -21,3 +22,4 @@ export async function DELETE(
     );
   }
 }
+
