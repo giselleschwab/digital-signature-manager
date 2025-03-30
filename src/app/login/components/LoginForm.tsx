@@ -290,7 +290,7 @@ export default function LoginFormComponent() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full mt-8">
+                  <Button type="submit" className="w-full bg-[#30A949] cursor-pointer hover:bg-[#5CCF7F] transition-all duration-300 mt-8">
                     Registrar
                   </Button>
                 </form>
