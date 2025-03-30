@@ -23,6 +23,8 @@ Este teste técnico foi desenvolvido para demonstrar minhas habilidades como des
 ## Tecnologias Utilizadas
 
 - **Next.js** com App Router
+- **Tailwind CSS** para estilização
+- **shadcn/ui** para componentes de interface
 - **NextAuth 4** para autenticação
 - **Prisma ORM** para interação com o banco de dados
 - **SQLite** como banco de dados
