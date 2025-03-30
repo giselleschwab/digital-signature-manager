@@ -4,7 +4,10 @@ import DocumentTable from "./components/DocumentTable";
 
 const fetchDocuments = async (userId: number) => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/documents/list?userId=${userId}`);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/documents/list?userId=${userId}`,
+      { cache: 'no-store' } 
+    );
     if (!response.ok) {
       throw new Error("Erro ao carregar documentos");
     }
@@ -14,6 +17,7 @@ const fetchDocuments = async (userId: number) => {
     return [];
   }
 };
+
 
 export default async function DocumentsList() {
   const session = await getServerAuthSession();
@@ -47,7 +51,7 @@ export default async function DocumentsList() {
     <div className="bg-[#D9D9D9] min-h-screen">
       {user && <Header userName={user.name ?? "Guest"} />}
       {/* Passe os documentos formatados como props para o DocumentTable */}
-      <DocumentTable documents={formattedDocuments} />
+      <DocumentTable key={documents.length} documents={formattedDocuments} />
     </div>
   );
 }

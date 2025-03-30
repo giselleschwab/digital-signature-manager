@@ -83,11 +83,11 @@ const UploadDocument = () => {
           <DialogHeader>
             <DialogTitle>Upload de Documento</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 cursor-pointer">
             {file ? (
               <div className="flex items-center justify-between border p-2 w-full bg-gray-100 rounded">
                 <span className="text-sm">{file.name}</span>
-                <button type="button" onClick={handleRemoveFile} className="text-red-500">
+                <button type="button" onClick={handleRemoveFile} className="text-red-500 cursor-pointer">
                   <X size={18} />
                 </button>
               </div>
@@ -104,7 +104,7 @@ const UploadDocument = () => {
               <Button
                 type="submit"
                 disabled={uploading}
-                className="bg-[#30A949] text-white hover:bg-[#5CCF7F] transition-all duration-300"
+                className="bg-[#30A949] text-white hover:bg-[#5CCF7F] transition-all duration-300 cursor-pointer"
               >
                 {uploading ? "Carregando..." : "Enviar"}
               </Button>

@@ -8,23 +8,37 @@ generator client {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id         Int         @id @default(autoincrement())
+  name       String
+  email      String      @unique
+  password   String
+  createdAt  DateTime    @default(now())
 
-  documents Document[]
+  documents  Document[]
+  signatures Signature[] @relation("UserSignatures")
 }
 
 model Document {
-  id        String   @id @default(uuid()) // ID único para cada documento
-  name      String // Nome do documento
-  fileKey   String // Caminho ou URL do arquivo
-  userId    Int // Relacionado ao usuário que enviou
-  status    String   @default("PENDING") // Status inicial
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String      @id @default(uuid())
+  name       String
+  fileKey    String
+  userId     Int
+  status     String      @default("PENDING")
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  signatures Signature[] @relation("DocumentSignatures")
+}
+
+model Signature {
+  id           String   @id @default(uuid())
+  documentId   String
+  userId       Int
+  signatureImg String
+  createdAt    DateTime @default(now())
+  signedAt     DateTime
+
+  document     Document @relation("DocumentSignatures", fields: [documentId], references: [id], onDelete: Cascade)
+  user         User     @relation("UserSignatures", fields: [userId], references: [id], onDelete: Cascade)
 }

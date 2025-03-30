@@ -6,6 +6,7 @@ import { LuEye, LuSquarePen, LuTrash2 } from "react-icons/lu";
 import UploadDocument from "./UploadDocument";
 import DocumentPreview from './DocumentPreview';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from '@/components/ui/button';
 
 interface Document {
   id: number;
@@ -21,6 +22,7 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [previewFileKey, setPreviewFileKey] = useState<string | null>(null);
+
 
   const handleViewClick = (document: Document) => {
     setPreviewFileKey(document.fileKey);
@@ -61,7 +63,7 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
         </div>
       </div>
 
-      <Table className="bg-white rounded-2xl shadow mt-4">
+      <Table className="bg-white rounded-2xl shadow mt-6">
         <TableHeader>
           <TableRow>
             <TableHead>Nome do Documento</TableHead>
@@ -115,25 +117,33 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Confirmar Exclusão</DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="pt-4 font">
                 Tem certeza que deseja excluir o documento <strong>{selectedDoc.name}</strong>?
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <button onClick={() => setIsDialogOpen(false)} disabled={loading}>
+              <Button
+                onClick={() => setIsDialogOpen(false)}
+                disabled={loading}
+                className="bg-red-800  hover:bg-red-600 transition-all duration-300 cursor-pointer"
+                >
                 Cancelar
-              </button>
-              <button onClick={handleConfirmDelete} disabled={loading}>
+              </Button>
+              <Button
+                onClick={handleConfirmDelete}
+                disabled={loading} 
+                className="bg-[#30A949] text-white hover:bg-[#5CCF7F] transition-all duration-300 cursor-pointer"
+                >
                 {loading ? 'Excluindo...' : 'Confirmar'}
-              </button>
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       )}
 
       {previewFileKey && (
-        <DocumentPreview 
-          fileKey={previewFileKey} 
+        <DocumentPreview
+          fileKey={previewFileKey}
           onClose={() => setPreviewFileKey(null)}
         />
       )}

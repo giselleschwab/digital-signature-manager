@@ -1,19 +1,35 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { signIn } from "next-auth/react";
-import Image from 'next/image';
+import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-// Usando o zod para validação do formulário
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+
+
 const loginFormSchema = z.object({
   email: z.string().email("E-mail inválido"),
   password: z.string().min(1, "Obrigatório"),
@@ -32,9 +48,10 @@ type RegisterForm = z.infer<typeof registerFormSchema>;
 export default function LoginFormComponent() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [isDialogOpen, setDialogOpen] = useState(false); // Controla a abertura do modal
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); 
 
-  // UseForm para o formulário de login
+  // Configuração do formulário de login
   const loginForm = useForm<LoginForm>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -43,7 +60,6 @@ export default function LoginFormComponent() {
     },
   });
 
-  // UseForm para o formulário de registro
   const registerForm = useForm<RegisterForm>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
@@ -54,7 +70,6 @@ export default function LoginFormComponent() {
     },
   });
 
-  // Função de Login
   async function onLoginSubmit(values: LoginForm) {
     try {
       setLoading(true);
@@ -65,7 +80,9 @@ export default function LoginFormComponent() {
       if (res?.ok) {
         toast.success("Usuário logado com sucesso!");
         router.push("/documents");
-      } else throw new Error();
+      } else {
+        throw new Error();
+      }
     } catch {
       toast.error("Usuário/Senha inválido(s).");
     } finally {
@@ -79,7 +96,7 @@ export default function LoginFormComponent() {
       setLoading(true);
       // Verifica se as senhas coincidem
       if (values.password !== values.confirmPassword) {
-        toast.error("As senhas não coincidem.");
+        setErrorMessage("As senhas não coincidem.");
         return;
       }
 
@@ -89,7 +106,7 @@ export default function LoginFormComponent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: values.name, // Envia o nome
+          name: values.name,
           email: values.email,
           password: values.password,
         }),
@@ -99,12 +116,13 @@ export default function LoginFormComponent() {
 
       if (response.ok) {
         toast.success("Cadastro realizado com sucesso!");
+        setErrorMessage(""); // Limpa a mensagem de erro em caso de sucesso
         setDialogOpen(false); // Fecha o modal
       } else {
-        toast.error(data.error || "Erro ao registrar usuário.");
+        setErrorMessage(data.error || "Erro ao registrar usuário.");
       }
     } catch {
-      toast.error("Erro ao registrar usuário.");
+      setErrorMessage("Erro ao registrar usuário.");
     } finally {
       setLoading(false);
     }
@@ -112,12 +130,16 @@ export default function LoginFormComponent() {
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
+      {/* Painel informativo */}
       <div className="w-full sm:w-2/3 md:w-3/5 bg-[#383838] text-white p-8 relative">
         <div className="max-w-md ml-auto mt-30 mr-8">
-          <h2 className="text-3xl text-right">Simplifique sua assinatura de documentos.</h2>
-          <p className="mt-4 text-3xl font-bold text-right"> Rápido, seguro e digital.</p>
+          <h2 className="text-3xl text-right">
+            Simplifique sua assinatura de documentos.
+          </h2>
+          <p className="mt-4 text-3xl font-bold text-right">
+            Rápido, seguro e digital.
+          </p>
         </div>
-
         <Image
           src="/image-login.svg"
           alt="Imagem explicativa"
@@ -127,11 +149,15 @@ export default function LoginFormComponent() {
         />
       </div>
 
+      {/* Painel de formulários */}
       <div className="w-full sm:w-1/3 md:w-2/5 bg-[#D9D9D9] flex items-center justify-center p-8 flex-1">
         <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
           {/* Formulário de Login */}
           <Form {...loginForm}>
-            <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+            <form
+              onSubmit={loginForm.handleSubmit(onLoginSubmit)}
+              className="space-y-4"
+            >
               <FormField
                 control={loginForm.control}
                 name="email"
@@ -152,7 +178,11 @@ export default function LoginFormComponent() {
                   <FormItem>
                     <FormLabel>Senha</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="Digite sua senha" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="Digite sua senha"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -160,7 +190,10 @@ export default function LoginFormComponent() {
               />
               {loading && <p className="mt-4">Aguarde...</p>}
               {!loading && (
-                <Button className="w-full bg-[#30A949] cursor-pointer hover:bg-[#5CCF7F] transition-all duration-300" type="submit">
+                <Button
+                  className="w-full bg-[#30A949] cursor-pointer hover:bg-[#5CCF7F] transition-all duration-300"
+                  type="submit"
+                >
                   Entrar
                 </Button>
               )}
@@ -168,11 +201,16 @@ export default function LoginFormComponent() {
           </Form>
 
           <div className="mt-4 text-center">
-            <Button variant="link" className="cursor-pointer" onClick={() => setDialogOpen(true)}>
+            <Button
+              variant="link"
+              className="cursor-pointer"
+              onClick={() => setDialogOpen(true)}
+            >
               Novo por aqui? Cadastre-se!
             </Button>
           </div>
 
+          {/* Modal de Registro */}
           <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger />
             <DialogContent>
@@ -183,13 +221,20 @@ export default function LoginFormComponent() {
                 </DialogDescription>
               </DialogHeader>
 
+              {errorMessage && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertTitle>Erro</AlertTitle>
+                  <AlertDescription>{errorMessage}</AlertDescription>
+                </Alert>
+              )}
+
               <Form {...registerForm}>
                 <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
                   <FormField
                     control={registerForm.control}
                     name="name"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="mb-4">
                         <FormLabel>Nome</FormLabel>
                         <FormControl>
                           <Input placeholder="Digite seu nome" {...field} />
@@ -202,7 +247,7 @@ export default function LoginFormComponent() {
                     control={registerForm.control}
                     name="email"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="mb-4">
                         <FormLabel>E-mail</FormLabel>
                         <FormControl>
                           <Input placeholder="Digite seu e-mail" {...field} />
@@ -215,10 +260,14 @@ export default function LoginFormComponent() {
                     control={registerForm.control}
                     name="password"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="mb-4">
                         <FormLabel>Senha</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="Digite sua senha" {...field} />
+                          <Input
+                            type="password"
+                            placeholder="Digite sua senha"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -228,16 +277,22 @@ export default function LoginFormComponent() {
                     control={registerForm.control}
                     name="confirmPassword"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="mb-4">
                         <FormLabel>Repetir Senha</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="Repita sua senha" {...field} />
+                          <Input
+                            type="password"
+                            placeholder="Repita sua senha"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full">Registrar</Button>
+                  <Button type="submit" className="w-full mt-8">
+                    Registrar
+                  </Button>
                 </form>
               </Form>
             </DialogContent>
@@ -245,7 +300,5 @@ export default function LoginFormComponent() {
         </div>
       </div>
     </div>
-
-
   );
 }
