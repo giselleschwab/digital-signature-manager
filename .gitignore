@@ -10,6 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 
+
 # testing
 /coverage
 
@@ -49,3 +50,7 @@ prisma/*.log
 prisma/.env
 
 !prisma/migrations/
+
+
+# Uploads (ignorar arquivos enviados)
+uploads/
