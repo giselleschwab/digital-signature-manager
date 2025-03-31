@@ -55,10 +55,13 @@ Siga os passos abaixo para configurar e executar o projeto localmente:
 
 3. **Configure as variáveis de ambiente:**
 
-    Crie um arquivo `.env.local` na raiz do projeto e adicione as seguintes variáveis (exemplo):
+    Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis (exemplo):
     ```bash
     DATABASE_URL="file:./dev.db"
     NEXTAUTH_SECRET="<SUA_CHAVE_SECRETA>"
+
+   NEXTAUTH_URL="http://localhost:3000
+   NEXT_PUBLIC_BASE_URL="http://localhost:3000"
     ```
 
 4. **Execute as migrações do banco de dados:**
