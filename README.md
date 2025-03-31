@@ -60,7 +60,7 @@ Siga os passos abaixo para configurar e executar o projeto localmente:
     DATABASE_URL="file:./dev.db"
     NEXTAUTH_SECRET="<SUA_CHAVE_SECRETA>"
 
-   NEXTAUTH_URL="http://localhost:3000
+   NEXTAUTH_URL="http://localhost:3000"
    NEXT_PUBLIC_BASE_URL="http://localhost:3000"
     ```
 
