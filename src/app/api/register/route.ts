@@ -25,7 +25,8 @@ export async function POST(req: Request) {
     const newUser = await userRepository.create({ name, email, password: hashedPassword });
 
     return NextResponse.json({ message: "Usuário cadastrado com sucesso!", user: newUser }, { status: 201 });
-  } catch {
+  } catch (error) {
+    console.error("Erro ao registrar o usuário:", error);
     return NextResponse.json({ error: "Erro ao registrar o usuário" }, { status: 500 });
   }
 }
