@@ -1,48 +1,48 @@
-import fs from 'fs';
-import path from 'path';
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerAuthSession } from '@/backend/authentication/auth';
-import { DocumentRepositoryPrisma } from '@/backend/documents/DocumentRepositoryPrisma';
-
-const uploadDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+import { NextRequest, NextResponse } from 'next/server'
+import { getServerAuthSession } from '@/backend/authentication/auth'
+import { DocumentRepositoryPrisma } from '@/backend/documents/DocumentRepositoryPrisma'
+import { supabase } from '@/lib/supabase'
+import { v4 as uuid } from 'uuid'
 
 export const POST = async (req: NextRequest) => {
   try {
-    const session = await getServerAuthSession();
+    const session = await getServerAuthSession()
     if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 });
+      return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })
     }
-    const userId = parseInt(session.user.id);
+    const userId = parseInt(session.user.id)
 
-    const formData = await req.formData();
-    const file = formData.get('file') as File;
+    const formData = await req.formData()
+    const file = formData.get('file') as File
 
     if (!file) {
-      return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 });
+      return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 })
     }
 
-    const originalFileName = file.name;
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const fileName = `${uuid()}-${file.name}`
 
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const { error: uploadError } = await supabase.storage
+      .from('documents') 
+      .upload(fileName, buffer, {
+        contentType: file.type || 'application/octet-stream',
+      })
 
-    const fileNameOnDisk = `${Date.now()}-${originalFileName}`;
-    const filePath = path.join(uploadDir, fileNameOnDisk);
+    if (uploadError) {
+      console.error('Erro no upload para Supabase Storage:', uploadError)
+      return NextResponse.json({ error: 'Erro no upload do arquivo' }, { status: 500 })
+    }
 
-    fs.writeFileSync(filePath, buffer);
-
-    const documentRepository = new DocumentRepositoryPrisma();
+    const documentRepository = new DocumentRepositoryPrisma()
     const document = await documentRepository.create({
-      name: originalFileName, // salva o nome original no banco
-      fileKey: filePath,
+      name: file.name,
+      fileKey: fileName, 
       userId,
-    });
+    })
 
-    return NextResponse.json({ document }, { status: 200 });
+    return NextResponse.json({ document }, { status: 200 })
   } catch (error) {
-    console.error('Erro ao processar o arquivo:', error);
-    return NextResponse.json({ error: 'Erro ao salvar o documento' }, { status: 500 });
+    console.error('Erro ao salvar documento:', error)
+    return NextResponse.json({ error: 'Erro ao salvar o documento' }, { status: 500 })
   }
-};
+}
