@@ -9,12 +9,6 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export const POST = async (req: NextRequest) => {
   try {
     const session = await getServerAuthSession();

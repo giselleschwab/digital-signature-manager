@@ -5,12 +5,13 @@ const documentRepository = new DocumentRepositoryPrisma();
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } } // <- essa forma funciona!
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
+  const { id } = params;
 
   try {
     const deletedDocument = await documentRepository.delete(id);
+
     return NextResponse.json({
       message: 'Documento excluído com sucesso',
       document: deletedDocument,

@@ -29,10 +29,17 @@ export default async function DocumentsList() {
 
   const documents = await fetchDocuments(Number(user.id));
 
-  const formattedDocuments = documents.map((document) => {
+  interface Document {
+    id: number;
+    name: string;
+    createdAt: string;
+    status: string;
+    fileKey: string;
+  }
+  
+  const formattedDocuments = documents.map((document: Document) => {
     const creationDate = new Date(document.createdAt);  
   
-    // Verifique se a data é válida
     const formattedDate = isNaN(creationDate.getTime()) 
       ? 'Data inválida'  
       : creationDate.toLocaleDateString();  
