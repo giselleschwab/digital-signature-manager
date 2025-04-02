@@ -12,7 +12,7 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ fileKey, onClose }) =
   const fileUrl = `/api/documents/viewfile?fileKey=${encodeURIComponent(fileName || '')}`;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-[#757575] bg-opacity-100 flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-md w-3/4 h-3/4 relative">
         <button 
           className="absolute top-2 right-2 text-xl cursor-pointer"

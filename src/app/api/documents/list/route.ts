@@ -3,7 +3,6 @@ import { DocumentRepositoryPrisma } from "@/backend/documents/DocumentRepository
 
 const documentRepository = new DocumentRepositoryPrisma();
 
-// Listar documentos do usuário
 export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
@@ -13,10 +12,9 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "userId é obrigatório" }, { status: 400 });
       }
   
-      // Obter documentos com status já mapeado corretamente
       const documents = await documentRepository.listByUserId(userId);
   
-      return NextResponse.json(documents);  // Não precisa mais mapear o status aqui
+      return NextResponse.json(documents);  
     } catch {
       return NextResponse.json({ error: "Erro ao buscar documentos" }, { status: 500 });
     }

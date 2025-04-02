@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { LuEye, LuSquarePen, LuTrash2 } from "react-icons/lu";
 import UploadDocument from "./UploadDocument";
 import DocumentPreview from './DocumentPreview';
+import SignatureCanvas from 'react-signature-canvas';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 
@@ -22,7 +23,9 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [previewFileKey, setPreviewFileKey] = useState<string | null>(null);
-
+  const [isSigning, setIsSigning] = useState(false);
+  const [signingDoc, setSigningDoc] = useState<Document | null>(null);
+  const sigCanvasRef = useRef<SignatureCanvas>(null);
 
   const handleViewClick = (document: Document) => {
     setPreviewFileKey(document.fileKey);
@@ -31,6 +34,11 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
   const handleDeleteClick = (document: Document) => {
     setSelectedDoc(document);
     setIsDialogOpen(true);
+  };
+
+  const handleSignClick = (document: Document) => {
+    setSigningDoc(document);
+    setIsSigning(true);
   };
 
   const handleConfirmDelete = async () => {
@@ -94,9 +102,14 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
                   >
                     <LuEye className="h-5 w-5" />
                   </button>
-                  <button className="text-[#383838] hover:text-[#7a7a7a] cursor-pointer" title="Assinar documento">
+                  <button
+                    className="text-[#383838] hover:text-[#7a7a7a] cursor-pointer"
+                    title="Assinar documento"
+                    onClick={() => handleSignClick(document)}
+                  >
                     <LuSquarePen className="h-5 w-5" />
                   </button>
+
                   <button
                     className="text-[#383838] hover:text-[#7a7a7a] cursor-pointer"
                     title="Deletar documento"
@@ -126,14 +139,14 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
                 onClick={() => setIsDialogOpen(false)}
                 disabled={loading}
                 className="bg-red-800  hover:bg-red-600 transition-all duration-300 cursor-pointer"
-                >
+              >
                 Cancelar
               </Button>
               <Button
                 onClick={handleConfirmDelete}
-                disabled={loading} 
+                disabled={loading}
                 className="bg-[#30A949] text-white hover:bg-[#5CCF7F] transition-all duration-300 cursor-pointer"
-                >
+              >
                 {loading ? 'Excluindo...' : 'Confirmar'}
               </Button>
             </DialogFooter>
@@ -147,6 +160,88 @@ const DocumentTable: React.FC<{ documents: Document[] }> = ({ documents }) => {
           onClose={() => setPreviewFileKey(null)}
         />
       )}
+
+      {isSigning && signingDoc && (
+        <Dialog open={isSigning} onOpenChange={setIsSigning}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Assinar Documento</DialogTitle>
+              <DialogDescription>
+                Simule sua assinatura abaixo para o documento <strong>{signingDoc.name}</strong>
+              </DialogDescription>
+            </DialogHeader>
+
+            {/* Aqui você pode usar um campo de texto ou canvas */}
+            <div className="mt-4">
+              <SignatureCanvas
+                penColor="black"
+                canvasProps={{
+                  width: 400,
+                  height: 200,
+                  className: 'border border-gray-300 rounded-md w-full',
+                }}
+                ref={sigCanvasRef}
+              />
+              <div className="flex justify-between mt-2">
+                <Button
+                  variant="outline"
+                  onClick={() => sigCanvasRef.current?.clear()}
+                >
+                  Limpar
+                </Button>
+              </div>
+            </div>
+
+            <DialogFooter className="mt-4">
+              <Button
+                className="bg-red-800  hover:bg-red-600 transition-all duration-300 cursor-pointer"
+                onClick={() => setIsSigning(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                className="bg-[#30A949] text-white hover:bg-[#5CCF7F] transition-all duration-300 cursor-pointer"
+                onClick={async () => {
+
+                  if (!signingDoc || !sigCanvasRef.current) return;
+
+                  const signatureDataUrl = sigCanvasRef.current.getCanvas().toDataURL("image/png")
+
+                  if (sigCanvasRef.current.isEmpty()) {
+                    alert("Por favor, desenhe sua assinatura.");
+                    return;
+                  }
+
+                  try {
+                    const res = await fetch(`/api/documents/sign/${signingDoc.id}`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        signatureImg: signatureDataUrl,
+                      }),
+                    });
+                    if (res.ok) {
+                      const updatedDocs = docs.map((doc) =>
+                        doc.id === signingDoc.id ? { ...doc, status: 'Assinado' } : doc
+                      );
+                      setDocs(updatedDocs);
+                      setIsSigning(false);
+                      setSigningDoc(null);
+                    } else {
+                      console.error('Erro ao assinar documento');
+                    }
+                  } catch (err) {
+                    console.error('Erro:', err);
+                  }
+                }}
+              >
+                Assinar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
     </div>
   );
 };
