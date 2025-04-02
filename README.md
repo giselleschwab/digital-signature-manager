@@ -4,7 +4,7 @@
 
 Este teste técnico foi desenvolvido para demonstrar minhas habilidades como desenvolvedor frontend, com foco em Next.js, NextAuth 4 e conhecimentos básicos de backend. O objetivo é criar um protótipo de uma aplicação de gerenciamento de documentos, simulando um ambiente de assinatura digital.
 
-> **Observação:** A funcionalidade de assinatura digital será impplementada futuramente.
+> **Observação:** A funcionalidade de assinatura digital será implementada futuramente.
 
 ## Funcionalidades Implementadas
 
@@ -55,10 +55,13 @@ Siga os passos abaixo para configurar e executar o projeto localmente:
 
 3. **Configure as variáveis de ambiente:**
 
-    Crie um arquivo `.env.local` na raiz do projeto e adicione as seguintes variáveis (exemplo):
+    Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis (exemplo):
     ```bash
     DATABASE_URL="file:./dev.db"
     NEXTAUTH_SECRET="<SUA_CHAVE_SECRETA>"
+
+   NEXTAUTH_URL="http://localhost:3000"
+   NEXT_PUBLIC_BASE_URL="http://localhost:3000"
     ```
 
 4. **Execute as migrações do banco de dados:**
@@ -111,6 +114,26 @@ Implementar a funcionalidade de assinatura digital, incluindo:
 
 ## Deploy
 - O deploy ainda não foi realizado, mas o projeto está preparado para ser publicado em plataformas como Vercel.
+
+## Imagens da Aplicação
+
+### Página de login
+![image](https://github.com/user-attachments/assets/e097ad9f-12e9-47a0-8654-55a33ab764bd)
+
+### Modal de Registro
+![image](https://github.com/user-attachments/assets/8bc958b1-e792-4f08-8e91-af1942721d5a)
+
+### Tela de Documentos
+![image](https://github.com/user-attachments/assets/5bf2e5b4-4b1f-4bd2-b7b4-f6a17be1aeb5)
+
+### Modal de Inserir Documentos
+![image](https://github.com/user-attachments/assets/f3558442-1c41-4364-a2ec-2cf9478f20ce)
+
+### Visualização de Documento
+![image](https://github.com/user-attachments/assets/aacbdbfb-29c3-4c04-b021-82b2fd2f7cbd)
+
+### Exclusão de Documento
+![image](https://github.com/user-attachments/assets/36b4a1ae-7d56-4c2a-8070-270a1abf82e5)
 
 *Desenvolvido por Giselle Schwab*  
 *Email: giselleschwab@gmail.com*
