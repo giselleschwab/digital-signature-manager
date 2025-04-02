@@ -5,7 +5,7 @@ const documentRepository = new DocumentRepositoryPrisma();
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: { id: string } } // <- essa forma funciona!
 ) {
   const { id } = context.params;
 
