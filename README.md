@@ -117,7 +117,7 @@ Para realizar o login do usuário, acesse diretamente:
 ## Deploy
 A aplicação está disponível em produção no Vercel:
 
-👉 https://digital-signature-manager.vercel.app/documents
+👉 https://digital-signature-manager.vercel.app/
 
 
 *Desenvolvido por Giselle Schwab*  
