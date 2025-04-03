@@ -1,32 +1,20 @@
-import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const fileKey = searchParams.get('fileKey');
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const fileKey = searchParams.get('fileKey')
 
   if (!fileKey) {
-    return NextResponse.json({ error: 'fileKey é obrigatório' }, { status: 400 });
+    return NextResponse.json({ error: 'fileKey é obrigatório' }, { status: 400 })
   }
 
-  const uploadsDir = path.join(process.cwd(), 'uploads'); 
-  const filePath = path.join(uploadsDir, fileKey);
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 
-  if (!filePath.startsWith(uploadsDir)) {
-    return NextResponse.json({ error: 'Caminho de arquivo inválido' }, { status: 400 });
+  if (!supabaseUrl) {
+    return NextResponse.json({ error: 'SUPABASE_URL não configurada' }, { status: 500 })
   }
 
-  if (!fs.existsSync(filePath)) {
-    return NextResponse.json({ error: 'Arquivo não encontrado' }, { status: 404 });
-  }
+  const publicUrl = `${supabaseUrl}/storage/v1/object/public/documents/${fileKey}`
 
-  const fileBuffer = fs.readFileSync(filePath);
-
-  return new NextResponse(fileBuffer, {
-    headers: {
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'inline', 
-    },
-  });
+  return NextResponse.json({ url: publicUrl }, { status: 200 })
 }
