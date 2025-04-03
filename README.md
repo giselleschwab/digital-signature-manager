@@ -4,8 +4,6 @@
 
 Este teste técnico foi desenvolvido para demonstrar minhas habilidades como desenvolvedor frontend, com foco em Next.js, NextAuth 4 e conhecimentos básicos de backend. O objetivo é criar um protótipo de uma aplicação de gerenciamento de documentos, simulando um ambiente de assinatura digital.
 
-> **Observação:** A funcionalidade de assinatura digital será implementada futuramente.
-
 ## Funcionalidades Implementadas
 
 ### 1. Autenticação
@@ -20,6 +18,10 @@ Este teste técnico foi desenvolvido para demonstrar minhas habilidades como des
 - Visualização de documento
 - Exclusão de documentos
 
+### 3. Assinatura Digital (Simplificada)
+- Interface para simular assinatura em documento
+- Status do documento (Pendente, Assinado)
+
 ## Tecnologias Utilizadas
 
 - **Next.js** com App Router
@@ -28,12 +30,13 @@ Este teste técnico foi desenvolvido para demonstrar minhas habilidades como des
 - **NextAuth 4** para autenticação
 - **Prisma ORM** para interação com o banco de dados
 - **SQLite** como banco de dados
+- **Supabase** para armazenamento de arquivos em produção
 
 ## Estrutura do Projeto
 
 A aplicação está organizada em duas partes principais:
 
-- **Frontend:** Desenvolvido em Next.js com TypeScript, contendo as páginas de login, registro, upload, listagem e visualização de documentos.
+- **Frontend:** Desenvolvido em Next.js com TypeScript, contendo as páginas de login, registro, upload, listagem, visualização de documentos e assinatura.
 - **Backend:** APIs criadas no próprio Next.js para o gerenciamento dos documentos e autenticação, utilizando o Prisma para interagir com o banco de dados SQLite.
 
 ## Como Baixar e Rodar a Aplicação
@@ -105,6 +108,7 @@ Para realizar o login do usuário, acesse diretamente:
 ##  Desafios Enfrentados
 - Integração da autenticação com NextAuth e formulários personalizados de login/registro.
 - Gerenciamento e visualização de PDFs em ambiente local.
+- Implementação da interface de assinatura com desenho e registro no banco de dados.
 
 ## Próximos Passos
 Implementar a funcionalidade de assinatura digital, incluindo:
@@ -113,27 +117,10 @@ Implementar a funcionalidade de assinatura digital, incluindo:
 - Status do documento (Pendente, Assinado).
 
 ## Deploy
-- O deploy ainda não foi realizado, mas o projeto está preparado para ser publicado em plataformas como Vercel.
+A aplicação está disponível em produção no Vercel:
 
-## Imagens da Aplicação
+👉 https://digital-signature-manager.vercel.app/documents
 
-### Página de login
-![image](https://github.com/user-attachments/assets/e097ad9f-12e9-47a0-8654-55a33ab764bd)
-
-### Modal de Registro
-![image](https://github.com/user-attachments/assets/8bc958b1-e792-4f08-8e91-af1942721d5a)
-
-### Tela de Documentos
-![image](https://github.com/user-attachments/assets/5bf2e5b4-4b1f-4bd2-b7b4-f6a17be1aeb5)
-
-### Modal de Inserir Documentos
-![image](https://github.com/user-attachments/assets/f3558442-1c41-4364-a2ec-2cf9478f20ce)
-
-### Visualização de Documento
-![image](https://github.com/user-attachments/assets/aacbdbfb-29c3-4c04-b021-82b2fd2f7cbd)
-
-### Exclusão de Documento
-![image](https://github.com/user-attachments/assets/36b4a1ae-7d56-4c2a-8070-270a1abf82e5)
 
 *Desenvolvido por Giselle Schwab*  
 *Email: giselleschwab@gmail.com*
