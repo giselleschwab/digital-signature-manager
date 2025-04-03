@@ -111,10 +111,8 @@ Para realizar o login do usuário, acesse diretamente:
 - Implementação da interface de assinatura com desenho e registro no banco de dados.
 
 ## Próximos Passos
-Implementar a funcionalidade de assinatura digital, incluindo:
-- Interface para desenhar/selecionar assinatura.
-- Registro da assinatura com timestamp.
-- Status do documento (Pendente, Assinado).
+- Aprimorar a interface de assinatura, oferecendo múltiplas opções: desenho manual, upload de imagem ou reutilização de uma assinatura salva.
+- Melhorar a experiência do usuário (UX) com feedbacks visuais, transições suaves, mensagens claras e navegação mais intuitiva em todo o fluxo da aplicação.
 
 ## Deploy
 A aplicação está disponível em produção no Vercel:
