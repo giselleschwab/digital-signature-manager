@@ -7,9 +7,19 @@ interface DocumentPreviewProps {
 }
 
 const DocumentPreview: React.FC<DocumentPreviewProps> = ({ fileKey, onClose }) => {
-  const fileName = fileKey.split(/(\\|\/)/).pop();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-  const fileUrl = `/api/documents/viewfile?fileKey=${encodeURIComponent(fileName || '')}`;
+  if (!supabaseUrl) {
+    return (
+      <div className="fixed inset-0 bg-[#757575] bg-opacity-100 flex items-center justify-center z-50">
+        <div className="bg-white p-8 rounded-md w-3/4 h-3/4 relative">
+          <p>Erro: Variável de ambiente SUPABASE_URL não configurada.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const fileUrl = `${supabaseUrl}/storage/v1/object/public/documents/${fileKey}`;
 
   return (
     <div className="fixed inset-0 bg-[#757575] bg-opacity-100 flex items-center justify-center z-50">
@@ -22,7 +32,7 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ fileKey, onClose }) =
         </button>
         <iframe 
           src={fileUrl}
-          className="w-full h-full"
+          className="w-full h-full rounded-md border"
           title="Visualização do Documento"
         />
       </div>
